@@ -20,6 +20,16 @@ public class GameLogic {
      */
     public static int moveTileUpAsFarAsPossible(int[][] board, int r, int c, int minR) {
         // TODO: Fill this in in tasks 2, 3, 4
+        while (r > minR && board[r - 1][c] == 0) {
+            board[r - 1][c] = board[r][c];
+            board[r][c] = 0;
+            r -= 1;
+        }
+        if (r > minR && board[r][c] == board[r - 1][c]) {
+            board[r - 1][c] *= 2;
+            board[r][c] = 0;
+            return r;
+        }
         return 0;
     }
 
@@ -32,6 +42,15 @@ public class GameLogic {
      */
     public static void tiltColumn(int[][] board, int c) {
         // TODO: fill this in in task 5
+        for (int r = 1, minR = 0; r < board.length; r++) {
+            if(board[r][c] != 0) {
+                int mergeRow = moveTileUpAsFarAsPossible(board, r, c, minR);
+                if (mergeRow != 0) {
+                    minR = mergeRow;
+                }
+            }
+        }
+
         return;
     }
 
