@@ -61,6 +61,9 @@ public class GameLogic {
      */
     public static void tiltUp(int[][] board) {
         // TODO: fill this in in task 6
+        for (int c = 0; c < board.length; c++) {
+            tiltColumn(board, c);
+        }
         return;
     }
 
@@ -74,12 +77,24 @@ public class GameLogic {
     public static void tilt(int[][] board, Side side) {
         // TODO: fill this in in task 7
         if (side == Side.EAST) {
+            rotateLeft(board);
+            tiltUp(board);
+            rotateRight(board);
             return;
         } else if (side == Side.WEST) {
+            rotateRight(board);
+            tiltUp(board);
+            rotateLeft(board);
             return;
         } else if (side == Side.SOUTH) {
+            rotateRight(board);
+            rotateRight(board);
+            tiltUp(board);
+            rotateRight(board);
+            rotateRight(board);
             return;
         } else {
+            tiltUp(board);
             return;
         }
     }
