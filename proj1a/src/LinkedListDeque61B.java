@@ -55,4 +55,9 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
     public boolean isEmpty() {
         return size == 0;
     }
+
+    @Override
+    public int size() {
+        return size;
+    }
 }
