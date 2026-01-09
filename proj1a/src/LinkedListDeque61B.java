@@ -1,28 +1,27 @@
 import java.util.List;
 import java.util.ArrayList;
 public class LinkedListDeque61B<T> implements Deque61B<T> {
-    private Node<T> sentinel;
+    private Node sentinel;
     private int size;
 
-    public static class Node<T> {
+    public class Node {
         public T item;
-        public Node<T> next;
-        public Node<T> prev;
-        public Node(T i) {
-            item = i;
+        public Node next;
+        public Node prev;
+        public Node(T item) {
+            this.item = item;
         }
     }
 
     public LinkedListDeque61B() {
-        sentinel = new Node<>(null);
+        sentinel = new Node(null);
         sentinel.next = sentinel;
         sentinel.prev = sentinel;
-        size = 0;
     }
 
     @Override
     public void addFirst(T x) {
-        Node<T> newNode = new Node<>(x);
+        Node newNode = new Node(x);
         newNode.prev = sentinel;
         newNode.next = sentinel.next;
         sentinel.next.prev = newNode;
@@ -32,7 +31,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
 
     @Override
     public void addLast(T x) {
-        Node<T> newNode = new Node<>(x);
+        Node newNode = new Node(x);
         newNode.next = sentinel;
         newNode.prev = sentinel.prev;
         sentinel.prev.next = newNode;
@@ -43,7 +42,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
     @Override
     public List<T> toList() {
         List<T> list = new ArrayList<>();
-        Node<T> current = sentinel.next;
+        Node current = sentinel.next;
         while (current != sentinel) {
             list.add(current.item);
             current = current.next;
@@ -83,5 +82,38 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
         sentinel.prev.next = sentinel;
         size--;
         return item;
+    }
+
+    @Override
+    public T get (int index) {
+        if(index < 0 || index >= size) {
+            return null;
+        }
+        Node current = sentinel.next;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        return current.item;
+        // int currentIndex = size - 1 - index;
+        // while (currentIndex > 0) {
+        //     current = current.prev;
+        //     currentIndex--;
+        // }
+        // return current.item;
+    }
+
+    @Override
+    public T getRecursive(int index) {
+        if(index < 0 || index >= size) {
+            return null;
+        }
+        return getRecursiveHelper(sentinel.next, index);
+    }
+
+    private T getRecursiveHelper(Node node, int index) {
+        if(index == 0) {
+            return node.item;
+        }
+        return getRecursiveHelper(node.next, index - 1);
     }
 }
