@@ -1,5 +1,4 @@
-import java.lang.classfile.components.ClassPrinter.Node;
-
+import java.util.List;
 public class LinkedListDeque61B<T> implements Deque61B<T> {
     private Node<T> sentinel;
     private int size;
@@ -40,4 +39,13 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
     }
 
     @Override
+    public List<T> toList() {
+        List<T> list = new java.util.ArrayList<>();
+        Node<T> current = sentinel.next;
+        while (current != sentinel) {
+            list.add(current.item);
+            current = current.next;
+        }
+        return list;
+    }
 }
