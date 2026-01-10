@@ -84,7 +84,7 @@ public class MachineStage implements AdventureStage {
         int w = (b - a) >> 31;
         int z = ~(b - a) >> 31;
 
-        int max = b & w | a & z;
+        int max = (a & w) | (b & z);
         return max;
     }
 
