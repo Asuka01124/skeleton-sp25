@@ -1,6 +1,5 @@
 package deque;
 import java.lang.Math;
-import java.lang.reflect.Array;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -100,5 +99,29 @@ public class ArrayDeque61B<T> implements Deque61B<T>{
         items = newItems;
         nextFirst = capacity - 1;
         nextLast = size;
+    }
+
+    @Override
+    public java.util.Iterator<T> iterator() {
+        return new ArrayDequeIterator();
+    }
+    private class ArrayDequeIterator implements java.util.Iterator<T> {
+        private int wizPos;
+
+        ArrayDequeIterator() {
+            wizPos = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return wizPos < size;
+        }
+
+        @Override
+        public T next() {
+            T returnItem = get(wizPos);
+            wizPos++;
+            return returnItem;
+        }
     }
 }
