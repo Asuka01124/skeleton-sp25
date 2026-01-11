@@ -1,6 +1,8 @@
 package hashmap;
 
 import java.util.Collection;
+import java.lang.Math;
+
 
 /**
  *  A hash table-backed Map implementation.
@@ -19,19 +21,25 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         V value;
 
         Node(K k, V v) {
-            key = k;
-            value = v;
+            this.key = k;
+            this.value = v;
         }
     }
 
     /* Instance Variables */
     private Collection<Node>[] buckets;
     // You should probably define some more!
+    private int size;
+    private double loadFactor;
 
     /** Constructors */
-    public MyHashMap() { }
+    public MyHashMap() {
+        this(16, 0.75);
+     }
 
-    public MyHashMap(int initialCapacity) { }
+    public MyHashMap(int initialCapacity) {
+        this(initialCapacity, 0.75);
+    }
 
     /**
      * MyHashMap constructor that creates a backing array of initialCapacity.
@@ -40,7 +48,11 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * @param initialCapacity initial size of backing array
      * @param loadFactor maximum load factor
      */
-    public MyHashMap(int initialCapacity, double loadFactor) { }
+    public MyHashMap(int initialCapacity, double loadFactor) { 
+        this.buckets = new Collection[initialCapacity];
+        this.loadFactor = loadFactor;
+        this.size = 0;
+    }
 
     /**
      * Returns a data structure to be a hash table bucket
@@ -64,10 +76,113 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      */
     protected Collection<Node> createBucket() {
         // TODO: Fill in this method.
-        return null;
+        return new java.util.ArrayList<>();
     }
 
     // TODO: Implement the methods of the Map61B Interface below
     // Your code won't compile until you do so!
+    @Override
+    public void put(K key, V value) {
+        resize();
+        int index = Math.floorMod(key.hashCode(), buckets.length);
+        if(buckets[index] == null) {
+            buckets[index] = createBucket();
+        }
+        for (Node node : buckets[index]) {
+            if (node.key.equals(key)) {
+                node.value = value;
+            }
+        }
+        buckets[index].add(new Node(key, value));
+        size++;
+    }
 
+    @Override
+    public V get(K key) {
+        int  index = Math.floorMod(key.hashCode(), buckets.length);
+        if(buckets[index] == null) {
+            return null;
+            }
+        for(Node node : buckets[index]) {
+            if(node.key.equals(key)) {
+                return node.value;
+            }
+        }
+        return null;        
+    }
+
+    @Override
+    public boolean containsKey(K key) {
+        int index = Math.floorMod(key.hashCode(), buckets.length);
+        if(buckets[index] == null) {
+            return false;
+        }
+        for(Node node : buckets[index]) {
+            if(node.key.equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int size() {
+        return size;
+    }   
+
+    @Override
+    public void clear() {
+        buckets = new Collection[buckets.length];
+        size = 0;
+    }
+
+    @Override
+    public java.util.Set<K> keySet() {
+        java.util.Set<K> set = new java.util.HashSet<>();
+        for (int i = 0; i < buckets.length; i++) {
+            if (buckets[i] != null) {
+                for (Node node : buckets[i]) {
+                    set.add(node.key);
+                }
+            }
+        }
+        return set;
+    }
+    
+    @Override
+    public V remove(K key) {
+        int index = Math.floorMod(key.hashCode(), buckets.length);
+        if(buckets[index] == null) {
+            return null;
+        }
+        for(Node node : buckets[index]) {
+            if(node.key.equals(key)) {
+                V value = node.value;
+                buckets[index].remove(node);
+                size--;
+                return value;
+            }
+        }
+        return null;
+    }
+
+    public void resize() {
+        if((double)size / buckets.length > loadFactor) {
+            Collection<Node>[] oldBuckets = buckets;
+            buckets = new Collection[oldBuckets.length * 2];
+            size = 0;
+            for (Collection<Node> bucket : oldBuckets) {
+                if (bucket != null) {
+                    for (Node node : bucket) {
+                        put(node.key, node.value);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public java.util.Iterator<K> iterator() {
+        throw new UnsupportedOperationException();
+    }
 }
